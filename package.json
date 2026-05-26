@@ -45,7 +45,7 @@
     "eslint-plugin-chai-expect": "^4.1.0",
     "eslint-plugin-jsdoc": "^62.9.0",
     "eslint-plugin-json": "^4.0.1",
-    "eslint-plugin-n": "^17.24.0",
+    "eslint-plugin-n": "^18.0.1",
     "eslint-plugin-security": "^4.0.0",
     "eslint-plugin-security-node": "^1.1.4",
     "globals": "^17.4.0",
