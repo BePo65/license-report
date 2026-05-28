@@ -16,14 +16,14 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kessler/license-report"
+    "url": "https://github.com/bepo65/license-report"
   },
-  "author": "Yaniv Kessler",
+  "author": "BePo65",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/kessler/license-report/issues"
   },
-  "homepage": "https://github.com/kessler/license-report",
+  "homepage": "https://github.com/bepo65/license-report",
   "dependencies": {
     "@kessler/tableify": "^1.0.2",
     "debug": "^4.4.3",
