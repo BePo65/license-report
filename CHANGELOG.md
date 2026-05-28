@@ -2,8 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
-## [6.8.5](https://github.com/bepo65/license-report/compare/v6.8.4...v6.8.5) (2026-05-28)
-
 ## [6.8.4](https://github.com/kessler/license-report/compare/v6.8.3...v6.8.4) (2026-04-02)
 
 ## [6.8.3](https://github.com/kessler/license-report/compare/v6.8.1...v6.8.3) (2026-04-01)
