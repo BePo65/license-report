@@ -1,14 +1,16 @@
 # ANNOUNCEMENT: repository changing ownership
 
-On the 1st of May 2026 this repository will change ownership and move to the personal account of one of it's maintainers, [BePo65](https://github.com/BePo65)
+On the 26th of May 2026 this repository changed its ownership and moved to the personal account of one of it's maintainers, [BePo65](https://github.com/BePo65).
 
-Ownership change will also occur on the npm registry to [BePo65](https://www.npmjs.com/~bepo65)
+The same change of ownership occurred on the npm registry.
+
+Thanks to [yanniv kessler](https://github.com/kessler) for creating this great tool.
 
 # NPM License Report Tool
 
 [![npm version](https://img.shields.io/npm/v/license-report.svg)](https://www.npmjs.com/package/license-report)
 [![npm downloads](https://img.shields.io/npm/dm/license-report.svg)](https://www.npmjs.com/package/license-report)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?cacheSeconds=2592000)](https://github.com/kessler/license-report/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?cacheSeconds=2592000)](https://github.com/bepo65/license-report/blob/master/LICENSE)
 
 > Generate a license report for the projects dependencies.
 
