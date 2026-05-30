@@ -8,18 +8,16 @@ import util from 'node:util';
 import eol from 'eol';
 import {
   addRemoteVersionsToExpectedData,
-  rawDataToJson,
   rawDataToCsv,
-  rawDataToTable,
   rawDataToHtml,
+  rawDataToJson,
   rawDataToMarkdown,
+  rawDataToTable,
 } from './fixture/expectedOutput.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const scriptPath = path
-  .resolve(__dirname, '..', 'index.js')
-  .replace(/(\s+)/g, '\\$1');
+const scriptPath = path.resolve(__dirname, '..', 'index.js').replace(/(\s+)/g, '\\$1');
 
 // test data for e2e test using the default fields
 const defaultFieldsPackageJsonPath = path
@@ -28,14 +26,7 @@ const defaultFieldsPackageJsonPath = path
 
 // test data for e2e test using the default fields in monorepo
 const defaultFieldsMonorepoPackageJsonPath = path
-  .resolve(
-    __dirname,
-    'fixture',
-    'monorepo',
-    'sub-project',
-    'sub-sub-project',
-    'package.json',
-  )
+  .resolve(__dirname, 'fixture', 'monorepo', 'sub-project', 'sub-sub-project', 'package.json')
   .replace(/(\s+)/g, '\\$1');
 
 // test data for e2e test using all fields
@@ -48,12 +39,7 @@ const allFieldsConfigPath = path
 
 // test data for e2e test using custom fields
 const customFieldsConfigPath = path
-  .resolve(
-    __dirname,
-    'fixture',
-    'all-fields',
-    'license-report-config-custom-fields.json',
-  )
+  .resolve(__dirname, 'fixture', 'all-fields', 'license-report-config-custom-fields.json')
   .replace(/(\s+)/g, '\\$1');
 
 // test data for e2e test using the default fields and local packages
@@ -66,12 +52,7 @@ const localPackagesConfigPath = path
 
 // test data for e2e test using package.json with empty dependencies
 const emptyDepsPackageJsonPath = path
-  .resolve(
-    __dirname,
-    'fixture',
-    'dependencies',
-    'empty-dependency-package.json',
-  )
+  .resolve(__dirname, 'fixture', 'dependencies', 'empty-dependency-package.json')
   .replace(/(\s+)/g, '\\$1');
 
 // test data for e2e test using package.json with no dependencies
@@ -94,196 +75,160 @@ const execAsPromise = util.promisify(cp.exec);
 let expectedDataBase;
 
 describe('end to end test', () => {
-  describe(
-    'end to end test for default fields',
-    { timeout: 60000 },
-    function () {
-      beforeEach(async () => {
-        expectedDataBase = EXPECTED_DEFAULT_FIELDS_RAW_DATA.slice(0);
-        await addRemoteVersionsToExpectedData(expectedDataBase);
-      });
+  describe('end to end test for default fields', { timeout: 60000 }, () => {
+    beforeEach(async () => {
+      expectedDataBase = EXPECTED_DEFAULT_FIELDS_RAW_DATA.slice(0);
+      await addRemoteVersionsToExpectedData(expectedDataBase);
+    });
 
-      it('produce a json report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsPackageJsonPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedJsonResult = rawDataToJson(expectedDataBase);
+    it('produce a json report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedJsonResult = rawDataToJson(expectedDataBase);
 
-        assert.deepStrictEqual(result, expectedJsonResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.deepStrictEqual(result, expectedJsonResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a table report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=table`,
-        );
-        const expectedTableResult = rawDataToTable(
-          expectedDataBase,
-          EXPECTED_TABLE_TEMPLATE,
-        );
+    it('produce a table report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=table`,
+      );
+      const expectedTableResult = rawDataToTable(expectedDataBase, EXPECTED_TABLE_TEMPLATE);
 
-        assert.strictEqual(stdout, expectedTableResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.strictEqual(stdout, expectedTableResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a csv report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=csv --csvHeaders`,
-        );
-        const expectedCsvResult = rawDataToCsv(
-          expectedDataBase,
-          EXPECTED_CSV_TEMPLATE,
-        );
+    it('produce a csv report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=csv --csvHeaders`,
+      );
+      const expectedCsvResult = rawDataToCsv(expectedDataBase, EXPECTED_CSV_TEMPLATE);
 
-        assert.strictEqual(stdout, expectedCsvResult);
-        assert.strictEqual(
-          stderr,
-          'Warning: field contains delimiter; value: "Dan VerWeire, Yaniv Kessler"\n',
-        );
-      });
+      assert.strictEqual(stdout, expectedCsvResult);
+      assert.strictEqual(
+        stderr,
+        'Warning: field contains delimiter; value: "Dan VerWeire, Yaniv Kessler"\n',
+      );
+    });
 
-      it('produce an html report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=html`,
-        );
-        const actualResult = eol.auto(stdout);
-        const expectedHtmlTemplate = eol.auto(
-          fs.readFileSync(
-            path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'),
-            'utf8',
-          ),
-        );
-        const expectedHtmlResult = rawDataToHtml(
-          expectedDataBase,
-          expectedHtmlTemplate,
-        );
+    it('produce an html report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=html`,
+      );
+      const actualResult = eol.auto(stdout);
+      const expectedHtmlTemplate = eol.auto(
+        fs.readFileSync(path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'), 'utf8'),
+      );
+      const expectedHtmlResult = rawDataToHtml(expectedDataBase, expectedHtmlTemplate);
 
-        assert.strictEqual(actualResult, expectedHtmlResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.strictEqual(actualResult, expectedHtmlResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a markdown table report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=markdown`,
-        );
-        const expectedMarkdownTableResult = rawDataToMarkdown(
-          expectedDataBase,
-          EXPECTED_MARKDOWN_TABLE_TEMPLATE,
-        );
+    it('produce a markdown table report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=markdown`,
+      );
+      const expectedMarkdownTableResult = rawDataToMarkdown(
+        expectedDataBase,
+        EXPECTED_MARKDOWN_TABLE_TEMPLATE,
+      );
 
-        assert.strictEqual(stdout, expectedMarkdownTableResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-    },
-  );
+      assert.strictEqual(stdout, expectedMarkdownTableResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+  });
 
-  describe(
-    'end to end test for default fields in monorepo',
-    { timeout: 60000 },
-    function () {
-      beforeEach(async () => {
-        expectedDataBase = EXPECTED_DEFAULT_FIELDS_RAW_DATA.slice(0);
-        await addRemoteVersionsToExpectedData(expectedDataBase);
-      });
+  describe('end to end test for default fields in monorepo', { timeout: 60000 }, () => {
+    beforeEach(async () => {
+      expectedDataBase = EXPECTED_DEFAULT_FIELDS_RAW_DATA.slice(0);
+      await addRemoteVersionsToExpectedData(expectedDataBase);
+    });
 
-      it('produce a json report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedJsonResult = rawDataToJson(expectedDataBase);
+    it('produce a json report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedJsonResult = rawDataToJson(expectedDataBase);
 
-        assert.deepStrictEqual(result, expectedJsonResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.deepStrictEqual(result, expectedJsonResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a table report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=table`,
-        );
-        const expectedTableResult = rawDataToTable(
-          expectedDataBase,
-          EXPECTED_TABLE_TEMPLATE,
-        );
+    it('produce a table report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=table`,
+      );
+      const expectedTableResult = rawDataToTable(expectedDataBase, EXPECTED_TABLE_TEMPLATE);
 
-        assert.strictEqual(stdout, expectedTableResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.strictEqual(stdout, expectedTableResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a csv report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=csv --csvHeaders`,
-        );
-        const expectedCsvResult = rawDataToCsv(
-          expectedDataBase,
-          EXPECTED_CSV_TEMPLATE,
-        );
+    it('produce a csv report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=csv --csvHeaders`,
+      );
+      const expectedCsvResult = rawDataToCsv(expectedDataBase, EXPECTED_CSV_TEMPLATE);
 
-        assert.strictEqual(stdout, expectedCsvResult);
-        assert.strictEqual(
-          stderr,
-          'Warning: field contains delimiter; value: "Dan VerWeire, Yaniv Kessler"\n',
-        );
-      });
+      assert.strictEqual(stdout, expectedCsvResult);
+      assert.strictEqual(
+        stderr,
+        'Warning: field contains delimiter; value: "Dan VerWeire, Yaniv Kessler"\n',
+      );
+    });
 
-      it('produce an html report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=html`,
-        );
-        const actualResult = eol.auto(stdout);
-        const expectedHtmlTemplate = eol.auto(
-          fs.readFileSync(
-            path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'),
-            'utf8',
-          ),
-        );
-        const expectedHtmlResult = rawDataToHtml(
-          expectedDataBase,
-          expectedHtmlTemplate,
-        );
+    it('produce an html report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=html`,
+      );
+      const actualResult = eol.auto(stdout);
+      const expectedHtmlTemplate = eol.auto(
+        fs.readFileSync(path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'), 'utf8'),
+      );
+      const expectedHtmlResult = rawDataToHtml(expectedDataBase, expectedHtmlTemplate);
 
-        assert.strictEqual(actualResult, expectedHtmlResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.strictEqual(actualResult, expectedHtmlResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a markdown table report', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=markdown`,
-        );
-        const expectedMarkdownTableResult = rawDataToMarkdown(
-          expectedDataBase,
-          EXPECTED_MARKDOWN_TABLE_TEMPLATE,
-        );
+    it('produce a markdown table report', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=markdown`,
+      );
+      const expectedMarkdownTableResult = rawDataToMarkdown(
+        expectedDataBase,
+        EXPECTED_MARKDOWN_TABLE_TEMPLATE,
+      );
 
-        assert.strictEqual(stdout, expectedMarkdownTableResult);
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-    },
-  );
+      assert.strictEqual(stdout, expectedMarkdownTableResult);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+  });
 
-  describe(
-    'end to end test for local packages',
-    { timeout: 50000 },
-    function () {
-      beforeEach(async () => {
-        expectedDataBase = EXPECTED_LOCAL_PACKAGES_RAW_DATA.slice(0);
-        await addRemoteVersionsToExpectedData(expectedDataBase);
-      });
+  describe('end to end test for local packages', { timeout: 50000 }, () => {
+    beforeEach(async () => {
+      expectedDataBase = EXPECTED_LOCAL_PACKAGES_RAW_DATA.slice(0);
+      await addRemoteVersionsToExpectedData(expectedDataBase);
+    });
 
-      it('produce a json report', async () => {
-        const { stdout } = await execAsPromise(
-          `node ${scriptPath} --package=${localPackagesPackageJsonPath} --config=${localPackagesConfigPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedJsonResult = rawDataToJson(expectedDataBase);
+    it('produce a json report', async () => {
+      const { stdout } = await execAsPromise(
+        `node ${scriptPath} --package=${localPackagesPackageJsonPath} --config=${localPackagesConfigPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedJsonResult = rawDataToJson(expectedDataBase);
 
-        assert.deepStrictEqual(result, expectedJsonResult);
-      });
-    },
-  );
+      assert.deepStrictEqual(result, expectedJsonResult);
+    });
+  });
 
-  describe('end to end test for all fields', { timeout: 50000 }, function () {
+  describe('end to end test for all fields', { timeout: 50000 }, () => {
     it('produce a json report with the fields specified in config', async () => {
       const { stdout, stderr } = await execAsPromise(
         `node ${scriptPath} --package=${allFieldsPackageJsonPath} --config=${allFieldsConfigPath}`,
@@ -363,7 +308,7 @@ describe('end to end test', () => {
     });
   });
 
-  describe('end to end test for single field', { timeout: 60000 }, function () {
+  describe('end to end test for single field', { timeout: 60000 }, () => {
     beforeEach(async () => {
       expectedDataBase = EXPECTED_SINGLE_FIELD_RAW_DATA.slice(0);
       await addRemoteVersionsToExpectedData(expectedDataBase);
@@ -381,224 +326,188 @@ describe('end to end test', () => {
     });
   });
 
-  describe(
-    'end to end test package without dependencies',
-    { timeout: 50000 },
-    function () {
-      it('produce a json report for a package with empty dependencies', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${emptyDepsPackageJsonPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedResult = [];
-        await addRemoteVersionsToExpectedData(expectedResult);
+  describe('end to end test package without dependencies', { timeout: 50000 }, () => {
+    it('produce a json report for a package with empty dependencies', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${emptyDepsPackageJsonPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedResult = [];
+      await addRemoteVersionsToExpectedData(expectedResult);
 
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain no entries`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.deepStrictEqual(result, expectedResult, `expected the output to contain no entries`);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a json report for a package without dependencies', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${noDepsPackageJsonPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedResult = [];
-        await addRemoteVersionsToExpectedData(expectedResult);
+    it('produce a json report for a package without dependencies', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${noDepsPackageJsonPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedResult = [];
+      await addRemoteVersionsToExpectedData(expectedResult);
 
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain no entries`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.deepStrictEqual(result, expectedResult, `expected the output to contain no entries`);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
 
-      it('produce a json report for a package with sub-package without dependencies', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${subPackageJsonPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedResult = [
-          {
-            author: 'Dan VerWeire, Yaniv Kessler',
-            definedVersion: '^1.0.2',
-            department: 'kessler',
-            installedVersion: '1.0.2',
-            licensePeriod: 'perpetual',
-            licenseType: 'MIT',
-            link: 'git+https://github.com/kessler/node-tableify.git',
-            material: 'material',
-            name: '@kessler/tableify',
-            relatedTo: 'stuff',
-            remoteVersion: '1.0.2',
+    it('produce a json report for a package with sub-package without dependencies', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${subPackageJsonPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedResult = [
+        {
+          author: 'Dan VerWeire, Yaniv Kessler',
+          definedVersion: '^1.0.2',
+          department: 'kessler',
+          installedVersion: '1.0.2',
+          licensePeriod: 'perpetual',
+          licenseType: 'MIT',
+          link: 'git+https://github.com/kessler/node-tableify.git',
+          material: 'material',
+          name: '@kessler/tableify',
+          relatedTo: 'stuff',
+          remoteVersion: '1.0.2',
+        },
+        {
+          author: 'TJ Holowaychuk <tj@vision-media.ca>',
+          definedVersion: '^9.1.1',
+          department: 'kessler',
+          installedVersion: '9.1.2',
+          licensePeriod: 'perpetual',
+          licenseType: 'MIT',
+          link: 'git+https://github.com/mochajs/mocha.git',
+          material: 'material',
+          name: 'mocha',
+          relatedTo: 'stuff',
+          remoteVersion: '9.2.2',
+        },
+      ];
+      await addRemoteVersionsToExpectedData(expectedResult);
+
+      assert.deepStrictEqual(result, expectedResult, `expected the output to contain no entries`);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+
+    it('produce a markdown report for a package with empty dependencies', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${emptyDepsPackageJsonPath} --output=markdown`,
+      );
+      const result = stdout;
+      const expectedResult = '\n';
+
+      assert.deepStrictEqual(result, expectedResult, `expected the output to contain no entries`);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+
+    it('produce a markdown report for a package with no dependencies', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${noDepsPackageJsonPath} --output=markdown`,
+      );
+      const result = stdout;
+      const expectedResult = '\n';
+
+      assert.deepStrictEqual(result, expectedResult, `expected the output to contain no entries`);
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+  });
+
+  describe('end to end test for custom fields', { timeout: 50000 }, () => {
+    it('produce a json report with custom fields specified in config', async () => {
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${allFieldsPackageJsonPath} --config=${customFieldsConfigPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedResult = [
+        {
+          department: 'kessler',
+          relatedTo: 'stuff',
+          name: 'semver',
+          licensePeriod: 'perpetual',
+          material: 'material',
+          licenseType: 'ISC',
+          link: 'git+https://github.com/npm/node-semver.git',
+          installedFrom: 'https://registry.npmjs.org/semver/-/semver-7.5.3.tgz',
+          remoteVersion: '5.7.1',
+          latestRemoteVersion: '7.5.4',
+          latestRemoteModified: '2022-07-25T16:10:58.611Z',
+          installedVersion: '7.5.3',
+          definedVersion: '^7.0.0',
+          author: 'GitHub Inc.',
+          description: 'The semantic version parser used by npm.',
+        },
+      ];
+      await addRemoteVersionsToExpectedData(expectedResult);
+
+      assert.deepStrictEqual(
+        result,
+        expectedResult,
+        `expected the output to contain all the configured fields`,
+      );
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+
+    it('produce a json report with custom nested field', async () => {
+      const nestedFieldsPackageJsonPath = path
+        .resolve(__dirname, 'fixture', 'custom-nested-fields', 'package.json')
+        .replace(/(\s+)/g, '\\$1');
+
+      const nestedFieldsConfigPath = path
+        .resolve(__dirname, 'fixture', 'custom-nested-fields', 'config-nested-fields.json')
+        .replace(/(\s+)/g, '\\$1');
+
+      const { stdout, stderr } = await execAsPromise(
+        `node ${scriptPath} --package=${nestedFieldsPackageJsonPath} --config=${nestedFieldsConfigPath}`,
+      );
+      const result = JSON.parse(stdout);
+      const expectedResult = [
+        {
+          name: 'debug',
+          licenseType: 'MIT',
+          link: 'git://github.com/debug-js/debug.git',
+          installedFrom: 'https://registry.npmjs.org/debug/-/debug-4.3.6.tgz',
+          remoteVersion: '4.3.7',
+          installedVersion: '4.3.6',
+          definedVersion: '^4.3.6',
+          latestRemoteVersion: '4.3.7',
+          latestRemoteModified: '2024-09-06T00:52:57.861Z',
+          author: 'Josh Junon (https://github.com/qix-)',
+          description: 'Lightweight debugging utility for Node.js and the browser',
+          repository: {
+            type: 'git',
+            url: 'git://github.com/debug-js/debug.git',
           },
-          {
-            author: 'TJ Holowaychuk <tj@vision-media.ca>',
-            definedVersion: '^9.1.1',
-            department: 'kessler',
-            installedVersion: '9.1.2',
-            licensePeriod: 'perpetual',
-            licenseType: 'MIT',
-            link: 'git+https://github.com/mochajs/mocha.git',
-            material: 'material',
-            name: 'mocha',
-            relatedTo: 'stuff',
-            remoteVersion: '9.2.2',
-          },
-        ];
-        await addRemoteVersionsToExpectedData(expectedResult);
+          'repository.url': 'git://github.com/debug-js/debug.git',
+        },
+        {
+          name: 'got',
+          licenseType: 'MIT',
+          link: 'git+https://github.com/sindresorhus/got.git',
+          installedFrom: 'https://registry.npmjs.org/got/-/got-14.4.2.tgz',
+          remoteVersion: '14.4.2',
+          installedVersion: '14.4.2',
+          definedVersion: '^14.4.2',
+          latestRemoteVersion: '14.4.2',
+          latestRemoteModified: '2024-08-21T20:39:07.774Z',
+          author: 'n/a',
+          description: 'Human-friendly and powerful HTTP request library for Node.js',
+          repository: 'sindresorhus/got',
+          'repository.url': 'n/a',
+        },
+      ];
+      await addRemoteVersionsToExpectedData(expectedResult);
 
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain no entries`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
+      assert.deepStrictEqual(
+        result,
+        expectedResult,
+        `expected the output to contain all the configured fields`,
+      );
+      assert.strictEqual(stderr, '', 'expected no warnings');
+    });
+  });
 
-      it('produce a markdown report for a package with empty dependencies', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${emptyDepsPackageJsonPath} --output=markdown`,
-        );
-        const result = stdout;
-        const expectedResult = '\n';
-
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain no entries`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-
-      it('produce a markdown report for a package with no dependencies', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${noDepsPackageJsonPath} --output=markdown`,
-        );
-        const result = stdout;
-        const expectedResult = '\n';
-
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain no entries`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-    },
-  );
-
-  describe(
-    'end to end test for custom fields',
-    { timeout: 50000 },
-    function () {
-      it('produce a json report with custom fields specified in config', async () => {
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${allFieldsPackageJsonPath} --config=${customFieldsConfigPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedResult = [
-          {
-            department: 'kessler',
-            relatedTo: 'stuff',
-            name: 'semver',
-            licensePeriod: 'perpetual',
-            material: 'material',
-            licenseType: 'ISC',
-            link: 'git+https://github.com/npm/node-semver.git',
-            installedFrom:
-              'https://registry.npmjs.org/semver/-/semver-7.5.3.tgz',
-            remoteVersion: '5.7.1',
-            latestRemoteVersion: '7.5.4',
-            latestRemoteModified: '2022-07-25T16:10:58.611Z',
-            installedVersion: '7.5.3',
-            definedVersion: '^7.0.0',
-            author: 'GitHub Inc.',
-            description: 'The semantic version parser used by npm.',
-          },
-        ];
-        await addRemoteVersionsToExpectedData(expectedResult);
-
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain all the configured fields`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-
-      it('produce a json report with custom nested field', async () => {
-        const nestedFieldsPackageJsonPath = path
-          .resolve(__dirname, 'fixture', 'custom-nested-fields', 'package.json')
-          .replace(/(\s+)/g, '\\$1');
-
-        const nestedFieldsConfigPath = path
-          .resolve(
-            __dirname,
-            'fixture',
-            'custom-nested-fields',
-            'config-nested-fields.json',
-          )
-          .replace(/(\s+)/g, '\\$1');
-
-        const { stdout, stderr } = await execAsPromise(
-          `node ${scriptPath} --package=${nestedFieldsPackageJsonPath} --config=${nestedFieldsConfigPath}`,
-        );
-        const result = JSON.parse(stdout);
-        const expectedResult = [
-          {
-            name: 'debug',
-            licenseType: 'MIT',
-            link: 'git://github.com/debug-js/debug.git',
-            installedFrom: 'https://registry.npmjs.org/debug/-/debug-4.3.6.tgz',
-            remoteVersion: '4.3.7',
-            installedVersion: '4.3.6',
-            definedVersion: '^4.3.6',
-            latestRemoteVersion: '4.3.7',
-            latestRemoteModified: '2024-09-06T00:52:57.861Z',
-            author: 'Josh Junon (https://github.com/qix-)',
-            description:
-              'Lightweight debugging utility for Node.js and the browser',
-            repository: {
-              type: 'git',
-              url: 'git://github.com/debug-js/debug.git',
-            },
-            'repository.url': 'git://github.com/debug-js/debug.git',
-          },
-          {
-            name: 'got',
-            licenseType: 'MIT',
-            link: 'git+https://github.com/sindresorhus/got.git',
-            installedFrom: 'https://registry.npmjs.org/got/-/got-14.4.2.tgz',
-            remoteVersion: '14.4.2',
-            installedVersion: '14.4.2',
-            definedVersion: '^14.4.2',
-            latestRemoteVersion: '14.4.2',
-            latestRemoteModified: '2024-08-21T20:39:07.774Z',
-            author: 'n/a',
-            description:
-              'Human-friendly and powerful HTTP request library for Node.js',
-            repository: 'sindresorhus/got',
-            'repository.url': 'n/a',
-          },
-        ];
-        await addRemoteVersionsToExpectedData(expectedResult);
-
-        assert.deepStrictEqual(
-          result,
-          expectedResult,
-          `expected the output to contain all the configured fields`,
-        );
-        assert.strictEqual(stderr, '', 'expected no warnings');
-      });
-    },
-  );
-
-  describe('end to end test with exclusions', { timeout: 50000 }, function () {
+  describe('end to end test with exclusions', { timeout: 50000 }, () => {
     beforeEach(async () => {
       expectedDataBase = EXPECTED_MULTI_DEPS_RAW_DATA.slice(0);
       await addRemoteVersionsToExpectedData(expectedDataBase);

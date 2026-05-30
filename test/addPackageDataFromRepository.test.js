@@ -1,8 +1,8 @@
 import assert from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import nock from 'nock';
-import { config } from '../lib/config.js';
 import { addPackageDataFromRepository } from '../lib/addPackageDataFromRepository.js';
+import { config } from '../lib/config.js';
 
 /**
  * Fetching data from the repository gets mocked to get independent from
@@ -13,7 +13,7 @@ const npmConfig = {
   defaultRegistry: config.registry,
 };
 
-describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
+describe('addPackageDataFromRepository', { timeout: 20000 }, () => {
   let originalHttpRetryLimit;
 
   beforeEach(() => {
@@ -41,26 +41,17 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'async');
-    assert.strictEqual(
-      packageReportData.link,
-      'git+https://github.com/caolan/async.git',
-    );
+    assert.strictEqual(packageReportData.link, 'git+https://github.com/caolan/async.git');
     assert.strictEqual(
       packageReportData.installedFrom,
       'https://registry.npmjs.org/async/-/async-3.2.0.tgz',
     );
     assert.strictEqual(packageReportData.remoteVersion, '3.2.2');
     assert.strictEqual(packageReportData.latestRemoteVersion, '3.2.4');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-07-25T16:10:41.997Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-07-25T16:10:41.997Z');
     assert.ok(scope.isDone());
   });
 
@@ -82,26 +73,17 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, '@kessler/tableify');
-    assert.strictEqual(
-      packageReportData.link,
-      'git+https://github.com/kessler/node-tableify.git',
-    );
+    assert.strictEqual(packageReportData.link, 'git+https://github.com/kessler/node-tableify.git');
     assert.strictEqual(
       packageReportData.installedFrom,
       'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.2.tgz',
     );
     assert.strictEqual(packageReportData.remoteVersion, '1.0.2');
     assert.strictEqual(packageReportData.latestRemoteVersion, '1.0.2');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-04-05T23:26:35.798Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-04-05T23:26:35.798Z');
     assert.ok(scope.isDone());
   });
 
@@ -121,10 +103,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'async');
     assert.strictEqual(packageReportData.link, 'n/a');
@@ -137,10 +116,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       "no matching version found in registry for package 'async@a.b.c'",
     );
     assert.strictEqual(packageReportData.latestRemoteVersion, '3.2.4');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-07-25T16:10:41.997Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-07-25T16:10:41.997Z');
     assert.ok(scope.isDone());
   });
 
@@ -160,10 +136,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'async');
     assert.strictEqual(packageReportData.link, 'n/a');
@@ -176,10 +149,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       "no matching version found in registry for package 'async@0.0.1'",
     );
     assert.strictEqual(packageReportData.latestRemoteVersion, '3.2.4');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-07-25T16:10:41.997Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-07-25T16:10:41.997Z');
     assert.ok(scope.isDone());
   });
 
@@ -199,29 +169,17 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'ol');
-    assert.strictEqual(
-      packageReportData.link,
-      'git://github.com/openlayers/openlayers.git',
-    );
+    assert.strictEqual(packageReportData.link, 'git://github.com/openlayers/openlayers.git');
     assert.strictEqual(
       packageReportData.installedFrom,
       'https://registry.npmjs.org/ol/-/ol-6.5.1-dev.1622493276948.tgz',
     );
-    assert.strictEqual(
-      packageReportData.remoteVersion,
-      '6.14.2-dev.1656800207214',
-    );
+    assert.strictEqual(packageReportData.remoteVersion, '6.14.2-dev.1656800207214');
     assert.strictEqual(packageReportData.latestRemoteVersion, '6.14.1');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-07-30T22:00:12.715Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-07-30T22:00:12.715Z');
     assert.ok(scope.isDone());
   });
 
@@ -242,26 +200,17 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, '@parcel/optimizer-cssnano');
-    assert.strictEqual(
-      packageReportData.link,
-      'git+https://github.com/parcel-bundler/parcel.git',
-    );
+    assert.strictEqual(packageReportData.link, 'git+https://github.com/parcel-bundler/parcel.git');
     assert.strictEqual(
       packageReportData.installedFrom,
       'https://registry.npmjs.org/@parcel/optimizer-cssnano/-/optimizer-cssnano-2.0.0-nightly.662.tgz',
     );
     assert.strictEqual(packageReportData.remoteVersion, '2.0.0-nightly.1135');
     assert.strictEqual(packageReportData.latestRemoteVersion, '2.6.2');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-07-28T00:41:39.714Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-07-28T00:41:39.714Z');
     assert.ok(scope.isDone());
   });
 
@@ -282,26 +231,17 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       .get(`/${packageEntry.fullName}`)
       .reply(200, responses[packageEntry.fullName]);
 
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'mocha');
-    assert.strictEqual(
-      packageReportData.link,
-      'git+https://github.com/mochajs/mocha.git',
-    );
+    assert.strictEqual(packageReportData.link, 'git+https://github.com/mochajs/mocha.git');
     assert.strictEqual(
       packageReportData.installedFrom,
       'https://registry.npmjs.org/mocha/-/mocha-8.3.1.tgz',
     );
     assert.strictEqual(packageReportData.remoteVersion, '8.4.0');
     assert.strictEqual(packageReportData.latestRemoteVersion, '10.0.0');
-    assert.strictEqual(
-      packageReportData.latestRemoteModified,
-      '2022-06-20T01:14:43.542Z',
-    );
+    assert.strictEqual(packageReportData.latestRemoteModified, '2022-06-20T01:14:43.542Z');
     assert.ok(scope.isDone());
   });
 
@@ -315,17 +255,11 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       licenseType: 'n/a',
       author: 'n/a',
     };
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'my-local-package');
     assert.strictEqual(packageReportData.link, 'n/a');
-    assert.strictEqual(
-      packageReportData.installedFrom,
-      'file:local-libs/my-local-package',
-    );
+    assert.strictEqual(packageReportData.installedFrom, 'file:local-libs/my-local-package');
     assert.strictEqual(packageReportData.remoteVersion, 'n/a');
     assert.strictEqual(packageReportData.latestRemoteVersion, 'n/a');
     assert.strictEqual(packageReportData.latestRemoteModified, 'n/a');
@@ -341,17 +275,11 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       licenseType: 'n/a',
       author: 'n/a',
     };
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'debug');
     assert.strictEqual(packageReportData.link, 'n/a');
-    assert.strictEqual(
-      packageReportData.installedFrom,
-      'git://github.com/debug-js/debug.git',
-    );
+    assert.strictEqual(packageReportData.installedFrom, 'git://github.com/debug-js/debug.git');
     assert.strictEqual(packageReportData.remoteVersion, 'n/a');
     assert.strictEqual(packageReportData.latestRemoteVersion, 'n/a');
     assert.strictEqual(packageReportData.latestRemoteModified, 'n/a');
@@ -367,10 +295,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
       licenseType: 'n/a',
       author: 'n/a',
     };
-    const packageReportData = await addPackageDataFromRepository(
-      packageEntry,
-      npmConfig,
-    );
+    const packageReportData = await addPackageDataFromRepository(packageEntry, npmConfig);
 
     assert.strictEqual(packageReportData.name, 'async');
     assert.strictEqual(packageReportData.link, 'n/a');
@@ -384,8 +309,7 @@ describe('addPackageDataFromRepository', { timeout: 20000 }, function () {
 const responses = {
   async: {
     name: 'async',
-    description:
-      'Higher-order functions and common patterns for asynchronous code',
+    description: 'Higher-order functions and common patterns for asynchronous code',
     'dist-tags': {
       latest: '3.2.4',
       next: '3.1.0',
@@ -393,8 +317,7 @@ const responses = {
     versions: {
       '3.1.1': {
         name: 'async',
-        description:
-          'Higher-order functions and common patterns for asynchronous code',
+        description: 'Higher-order functions and common patterns for asynchronous code',
         version: '3.1.1',
         repository: {
           type: 'git',
@@ -406,8 +329,7 @@ const responses = {
       },
       '3.2.0': {
         name: 'async',
-        description:
-          'Higher-order functions and common patterns for asynchronous code',
+        description: 'Higher-order functions and common patterns for asynchronous code',
         version: '3.2.0',
         repository: {
           type: 'git',
@@ -419,8 +341,7 @@ const responses = {
       },
       '3.2.1': {
         name: 'async',
-        description:
-          'Higher-order functions and common patterns for asynchronous code',
+        description: 'Higher-order functions and common patterns for asynchronous code',
         version: '3.2.1',
         repository: {
           type: 'git',
@@ -432,8 +353,7 @@ const responses = {
       },
       '3.2.2': {
         name: 'async',
-        description:
-          'Higher-order functions and common patterns for asynchronous code',
+        description: 'Higher-order functions and common patterns for asynchronous code',
         version: '3.2.2',
         repository: {
           type: 'git',
@@ -473,8 +393,7 @@ const responses = {
           url: 'git+https://github.com/wankdanker/node-tableify.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.0.tgz',
+          tarball: 'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.0.tgz',
           fileCount: 8,
           unpackedSize: 13396,
         },
@@ -489,8 +408,7 @@ const responses = {
           url: 'git+https://github.com/kessler/node-tableify.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.1.tgz',
+          tarball: 'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.1.tgz',
           fileCount: 8,
           unpackedSize: 13387,
         },
@@ -505,8 +423,7 @@ const responses = {
           url: 'git+https://github.com/kessler/node-tableify.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.2.tgz',
+          tarball: 'https://registry.npmjs.org/@kessler/tableify/-/tableify-1.0.2.tgz',
           fileCount: 8,
           unpackedSize: 13353,
         },
@@ -535,8 +452,7 @@ const responses = {
           url: 'git://github.com/openlayers/openlayers.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/ol/-/ol-6.5.1-dev.1622493276948.tgz',
+          tarball: 'https://registry.npmjs.org/ol/-/ol-6.5.1-dev.1622493276948.tgz',
           fileCount: 993,
           unpackedSize: 7033249,
         },
@@ -564,8 +480,7 @@ const responses = {
           url: 'git://github.com/openlayers/openlayers.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656620100371.tgz',
+          tarball: 'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656620100371.tgz',
           fileCount: 1711,
           unpackedSize: 9395612,
         },
@@ -579,8 +494,7 @@ const responses = {
           url: 'git://github.com/openlayers/openlayers.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656692026667.tgz',
+          tarball: 'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656692026667.tgz',
           fileCount: 1711,
           unpackedSize: 9395909,
         },
@@ -594,8 +508,7 @@ const responses = {
           url: 'git://github.com/openlayers/openlayers.git',
         },
         dist: {
-          tarball:
-            'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656800207214.tgz',
+          tarball: 'https://registry.npmjs.org/ol/-/ol-6.14.2-dev.1656800207214.tgz',
           fileCount: 1711,
           unpackedSize: 9397424,
         },

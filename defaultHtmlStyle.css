@@ -6,11 +6,11 @@ based on: https://codepen.io/DavidKern/pen/PwzYvv
 body {
   background: #fff;
   color: #000;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: "Lato", Arial, sans-serif;
 }
 
 h1 {
-  font-family: 'proxima-nova', sans-serif;
+  font-family: "proxima-nova", sans-serif;
   letter-spacing: -0.01em;
   font-weight: 700;
   font-style: normal;

@@ -53,10 +53,7 @@ describe('extractAuthor', () => {
     };
     const author = extractAuthor(packageJsonAuthor);
 
-    assert.strictEqual(
-      author,
-      'Barney Rubble b@rubble.com http://barnyrubble.tumblr.com/',
-    );
+    assert.strictEqual(author, 'Barney Rubble b@rubble.com http://barnyrubble.tumblr.com/');
   });
 
   it('if no author field is present', () => {

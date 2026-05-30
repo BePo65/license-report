@@ -89,10 +89,7 @@ describe('addLocalPackageData', () => {
       await addLocalPackageData(depsIndexElement, projectRootPath, fields);
 
       assert.ok(depsIndexElement.installedVersion);
-      assert.strictEqual(
-        depsIndexElement.installedVersion,
-        '6.5.1-dev.1622493276948',
-      );
+      assert.strictEqual(depsIndexElement.installedVersion, '6.5.1-dev.1622493276948');
     });
 
     it('gets versions with alias package', async () => {
@@ -129,17 +126,10 @@ describe('addLocalPackageData', () => {
         version: 'file:local-libs/my-local-package',
       };
       const customFields = ['author', 'description'];
-      await addLocalPackageData(
-        depsIndexElement,
-        projectRootPath,
-        customFields,
-      );
+      await addLocalPackageData(depsIndexElement, projectRootPath, customFields);
 
       assert.ok(depsIndexElement.description);
-      assert.strictEqual(
-        depsIndexElement.description,
-        'A list of color names and its values',
-      );
+      assert.strictEqual(depsIndexElement.description, 'A list of color names and its values');
     });
 
     it('adds package data for object property of custom field', async () => {
@@ -150,11 +140,7 @@ describe('addLocalPackageData', () => {
         version: 'file:local-libs/my-local-package',
       };
       const customFields = ['author', 'repository'];
-      await addLocalPackageData(
-        depsIndexElement,
-        projectRootPath,
-        customFields,
-      );
+      await addLocalPackageData(depsIndexElement, projectRootPath, customFields);
 
       assert.ok(depsIndexElement.repository);
       assert.deepStrictEqual(depsIndexElement.repository, {
@@ -171,11 +157,7 @@ describe('addLocalPackageData', () => {
         version: 'file:local-libs/my-local-package',
       };
       const customFields = ['name', 'repository.url'];
-      await addLocalPackageData(
-        depsIndexElement,
-        projectRootPath,
-        customFields,
-      );
+      await addLocalPackageData(depsIndexElement, projectRootPath, customFields);
 
       assert.ok(depsIndexElement['repository.url']);
       assert.strictEqual(
@@ -199,13 +181,7 @@ describe('addLocalPackageData', () => {
 
     it('adds package data for package in root level', async () => {
       const projectRootPath = path
-        .resolve(
-          __dirname,
-          'fixture',
-          'monorepo',
-          'sub-project',
-          'sub-sub-project',
-        )
+        .resolve(__dirname, 'fixture', 'monorepo', 'sub-project', 'sub-sub-project')
         .replace(/(\s+)/g, '\\$1');
 
       const depsIndexElement = {
@@ -222,13 +198,7 @@ describe('addLocalPackageData', () => {
 
     it('adds package data for package with multiple versions', async () => {
       const projectRootPath = path
-        .resolve(
-          __dirname,
-          'fixture',
-          'monorepo',
-          'sub-project',
-          'sub-sub-project',
-        )
+        .resolve(__dirname, 'fixture', 'monorepo', 'sub-project', 'sub-sub-project')
         .replace(/(\s+)/g, '\\$1');
 
       const depsIndexElement = {
