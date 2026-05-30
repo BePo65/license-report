@@ -17,60 +17,91 @@ import {
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const scriptPath = path.resolve(__dirname, '..', 'index.js').replace(/(\s+)/g, '\\$1');
+const scriptPath = path.resolve(__dirname, '..', 'index.js');
 
 // test data for e2e test using the default fields
-const defaultFieldsPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'default-fields', 'package.json')
-  .replace(/(\s+)/g, '\\$1');
+const defaultFieldsPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'default-fields',
+  'package.json',
+);
 
 // test data for e2e test using the default fields in monorepo
-const defaultFieldsMonorepoPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'monorepo', 'sub-project', 'sub-sub-project', 'package.json')
-  .replace(/(\s+)/g, '\\$1');
+const defaultFieldsMonorepoPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'monorepo',
+  'sub-project',
+  'sub-sub-project',
+  'package.json',
+);
 
 // test data for e2e test using all fields
-const allFieldsPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'all-fields', 'package.json')
-  .replace(/(\s+)/g, '\\$1');
-const allFieldsConfigPath = path
-  .resolve(__dirname, 'fixture', 'all-fields', 'license-report-config.json')
-  .replace(/(\s+)/g, '\\$1');
+const allFieldsPackageJsonPath = path.resolve(__dirname, 'fixture', 'all-fields', 'package.json');
+const allFieldsConfigPath = path.resolve(
+  __dirname,
+  'fixture',
+  'all-fields',
+  'license-report-config.json',
+);
 
 // test data for e2e test using custom fields
-const customFieldsConfigPath = path
-  .resolve(__dirname, 'fixture', 'all-fields', 'license-report-config-custom-fields.json')
-  .replace(/(\s+)/g, '\\$1');
+const customFieldsConfigPath = path.resolve(
+  __dirname,
+  'fixture',
+  'all-fields',
+  'license-report-config-custom-fields.json',
+);
 
 // test data for e2e test using the default fields and local packages
-const localPackagesPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'local-packages', 'package.json')
-  .replace(/(\s+)/g, '\\$1');
-const localPackagesConfigPath = path
-  .resolve(__dirname, 'fixture', 'local-packages', 'license-report-config.json')
-  .replace(/(\s+)/g, '\\$1');
+const localPackagesPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'local-packages',
+  'package.json',
+);
+const localPackagesConfigPath = path.resolve(
+  __dirname,
+  'fixture',
+  'local-packages',
+  'license-report-config.json',
+);
 
 // test data for e2e test using package.json with empty dependencies
-const emptyDepsPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'dependencies', 'empty-dependency-package.json')
-  .replace(/(\s+)/g, '\\$1');
+const emptyDepsPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'dependencies',
+  'empty-dependency-package.json',
+);
 
 // test data for e2e test using package.json with no dependencies
-const noDepsPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'dependencies', 'no-dependency-package.json')
-  .replace(/(\s+)/g, '\\$1');
+const noDepsPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'dependencies',
+  'no-dependency-package.json',
+);
 
 // test data for e2e test using package.json with no dependencies
-const subPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'dependencies', 'sub-deps-package.json')
-  .replace(/(\s+)/g, '\\$1');
+const subPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'dependencies',
+  'sub-deps-package.json',
+);
 
 // test data for e2e test with exclusions using package.json with multiple dependencies
-const multiPackageJsonPath = path
-  .resolve(__dirname, 'fixture', 'dependencies', 'multi-deps-package.json')
-  .replace(/(\s+)/g, '\\$1');
+const multiPackageJsonPath = path.resolve(
+  __dirname,
+  'fixture',
+  'dependencies',
+  'multi-deps-package.json',
+);
 
-const execAsPromise = util.promisify(cp.exec);
+const execFile = util.promisify(cp.execFile);
+const runLicenseReport = (args) => execFile('node', [scriptPath, ...args]);
 
 let expectedDataBase;
 
@@ -82,9 +113,9 @@ describe('end to end test', () => {
     });
 
     it('produce a json report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
 
@@ -93,9 +124,10 @@ describe('end to end test', () => {
     });
 
     it('produce a table report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=table`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--output=table',
+      ]);
       const expectedTableResult = rawDataToTable(expectedDataBase, EXPECTED_TABLE_TEMPLATE);
 
       assert.strictEqual(stdout, expectedTableResult);
@@ -103,9 +135,11 @@ describe('end to end test', () => {
     });
 
     it('produce a csv report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=csv --csvHeaders`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--output=csv',
+        '--csvHeaders',
+      ]);
       const expectedCsvResult = rawDataToCsv(expectedDataBase, EXPECTED_CSV_TEMPLATE);
 
       assert.strictEqual(stdout, expectedCsvResult);
@@ -116,9 +150,10 @@ describe('end to end test', () => {
     });
 
     it('produce an html report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=html`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--output=html',
+      ]);
       const actualResult = eol.auto(stdout);
       const expectedHtmlTemplate = eol.auto(
         fs.readFileSync(path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'), 'utf8'),
@@ -130,9 +165,10 @@ describe('end to end test', () => {
     });
 
     it('produce a markdown table report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --output=markdown`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--output=markdown',
+      ]);
       const expectedMarkdownTableResult = rawDataToMarkdown(
         expectedDataBase,
         EXPECTED_MARKDOWN_TABLE_TEMPLATE,
@@ -150,9 +186,9 @@ describe('end to end test', () => {
     });
 
     it('produce a json report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsMonorepoPackageJsonPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
 
@@ -161,9 +197,10 @@ describe('end to end test', () => {
     });
 
     it('produce a table report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=table`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsMonorepoPackageJsonPath}`,
+        '--output=table',
+      ]);
       const expectedTableResult = rawDataToTable(expectedDataBase, EXPECTED_TABLE_TEMPLATE);
 
       assert.strictEqual(stdout, expectedTableResult);
@@ -171,9 +208,11 @@ describe('end to end test', () => {
     });
 
     it('produce a csv report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=csv --csvHeaders`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsMonorepoPackageJsonPath}`,
+        '--output=csv',
+        '--csvHeaders',
+      ]);
       const expectedCsvResult = rawDataToCsv(expectedDataBase, EXPECTED_CSV_TEMPLATE);
 
       assert.strictEqual(stdout, expectedCsvResult);
@@ -184,9 +223,10 @@ describe('end to end test', () => {
     });
 
     it('produce an html report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=html`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsMonorepoPackageJsonPath}`,
+        '--output=html',
+      ]);
       const actualResult = eol.auto(stdout);
       const expectedHtmlTemplate = eol.auto(
         fs.readFileSync(path.join(__dirname, 'fixture', 'expectedOutput.e2e.html'), 'utf8'),
@@ -198,9 +238,10 @@ describe('end to end test', () => {
     });
 
     it('produce a markdown table report', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsMonorepoPackageJsonPath} --output=markdown`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsMonorepoPackageJsonPath}`,
+        '--output=markdown',
+      ]);
       const expectedMarkdownTableResult = rawDataToMarkdown(
         expectedDataBase,
         EXPECTED_MARKDOWN_TABLE_TEMPLATE,
@@ -218,9 +259,10 @@ describe('end to end test', () => {
     });
 
     it('produce a json report', async () => {
-      const { stdout } = await execAsPromise(
-        `node ${scriptPath} --package=${localPackagesPackageJsonPath} --config=${localPackagesConfigPath}`,
-      );
+      const { stdout } = await runLicenseReport([
+        `--package=${localPackagesPackageJsonPath}`,
+        `--config=${localPackagesConfigPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
 
@@ -230,9 +272,10 @@ describe('end to end test', () => {
 
   describe('end to end test for all fields', { timeout: 50000 }, () => {
     it('produce a json report with the fields specified in config', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${allFieldsPackageJsonPath} --config=${allFieldsConfigPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${allFieldsPackageJsonPath}`,
+        `--config=${allFieldsConfigPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedResult = [
         {
@@ -263,9 +306,9 @@ describe('end to end test', () => {
     });
 
     it('produce a json report without option "only"', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedLengthOfResult = 4;
 
@@ -278,9 +321,10 @@ describe('end to end test', () => {
     });
 
     it('produce a json report with option "only=prod"', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --only=prod`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--only=prod',
+      ]);
       const result = JSON.parse(stdout);
       const expectedLengthOfResult = 1;
 
@@ -293,9 +337,10 @@ describe('end to end test', () => {
     });
 
     it('produce a json report with option "only=prod,opt,peer"', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --only=prod,opt,peer`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--only=prod,opt,peer',
+      ]);
       const result = JSON.parse(stdout);
       const expectedLengthOfResult = 3;
 
@@ -315,9 +360,10 @@ describe('end to end test', () => {
     });
 
     it('produce a json report with a single field', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${defaultFieldsPackageJsonPath} --fields=name`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${defaultFieldsPackageJsonPath}`,
+        '--fields=name',
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
 
@@ -328,9 +374,7 @@ describe('end to end test', () => {
 
   describe('end to end test package without dependencies', { timeout: 50000 }, () => {
     it('produce a json report for a package with empty dependencies', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${emptyDepsPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([`--package=${emptyDepsPackageJsonPath}`]);
       const result = JSON.parse(stdout);
       const expectedResult = [];
       await addRemoteVersionsToExpectedData(expectedResult);
@@ -340,9 +384,7 @@ describe('end to end test', () => {
     });
 
     it('produce a json report for a package without dependencies', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${noDepsPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([`--package=${noDepsPackageJsonPath}`]);
       const result = JSON.parse(stdout);
       const expectedResult = [];
       await addRemoteVersionsToExpectedData(expectedResult);
@@ -352,9 +394,7 @@ describe('end to end test', () => {
     });
 
     it('produce a json report for a package with sub-package without dependencies', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${subPackageJsonPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([`--package=${subPackageJsonPath}`]);
       const result = JSON.parse(stdout);
       const expectedResult = [
         {
@@ -391,9 +431,10 @@ describe('end to end test', () => {
     });
 
     it('produce a markdown report for a package with empty dependencies', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${emptyDepsPackageJsonPath} --output=markdown`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${emptyDepsPackageJsonPath}`,
+        '--output=markdown',
+      ]);
       const result = stdout;
       const expectedResult = '\n';
 
@@ -402,9 +443,10 @@ describe('end to end test', () => {
     });
 
     it('produce a markdown report for a package with no dependencies', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${noDepsPackageJsonPath} --output=markdown`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${noDepsPackageJsonPath}`,
+        '--output=markdown',
+      ]);
       const result = stdout;
       const expectedResult = '\n';
 
@@ -415,9 +457,10 @@ describe('end to end test', () => {
 
   describe('end to end test for custom fields', { timeout: 50000 }, () => {
     it('produce a json report with custom fields specified in config', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${allFieldsPackageJsonPath} --config=${customFieldsConfigPath}`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${allFieldsPackageJsonPath}`,
+        `--config=${customFieldsConfigPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedResult = [
         {
@@ -449,17 +492,23 @@ describe('end to end test', () => {
     });
 
     it('produce a json report with custom nested field', async () => {
-      const nestedFieldsPackageJsonPath = path
-        .resolve(__dirname, 'fixture', 'custom-nested-fields', 'package.json')
-        .replace(/(\s+)/g, '\\$1');
-
-      const nestedFieldsConfigPath = path
-        .resolve(__dirname, 'fixture', 'custom-nested-fields', 'config-nested-fields.json')
-        .replace(/(\s+)/g, '\\$1');
-
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${nestedFieldsPackageJsonPath} --config=${nestedFieldsConfigPath}`,
+      const nestedFieldsPackageJsonPath = path.resolve(
+        __dirname,
+        'fixture',
+        'custom-nested-fields',
+        'package.json',
       );
+      const nestedFieldsConfigPath = path.resolve(
+        __dirname,
+        'fixture',
+        'custom-nested-fields',
+        'config-nested-fields.json',
+      );
+
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${nestedFieldsPackageJsonPath}`,
+        `--config=${nestedFieldsConfigPath}`,
+      ]);
       const result = JSON.parse(stdout);
       const expectedResult = [
         {
@@ -514,9 +563,12 @@ describe('end to end test', () => {
     });
 
     it('produce a report excluding a single package', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${multiPackageJsonPath} --exclude=tablemark --fields=name --fields=installedVersion`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${multiPackageJsonPath}`,
+        '--exclude=tablemark',
+        '--fields=name',
+        '--fields=installedVersion',
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
       expectedJsonResult.splice(1, 1);
@@ -526,9 +578,13 @@ describe('end to end test', () => {
     });
 
     it('produce a report excluding an array of packages', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${multiPackageJsonPath} --exclude=tablemark --exclude=text-table --fields=name --fields=installedVersion`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${multiPackageJsonPath}`,
+        '--exclude=tablemark',
+        '--exclude=text-table',
+        '--fields=name',
+        '--fields=installedVersion',
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
       expectedJsonResult.splice(1, 2);
@@ -538,9 +594,12 @@ describe('end to end test', () => {
     });
 
     it('produce a report excluding packages with a regular expression', async () => {
-      const { stdout, stderr } = await execAsPromise(
-        `node ${scriptPath} --package=${multiPackageJsonPath} --excludeRegex=@commitlint/.* --fields=name --fields=installedVersion`,
-      );
+      const { stdout, stderr } = await runLicenseReport([
+        `--package=${multiPackageJsonPath}`,
+        '--excludeRegex=@commitlint/.*',
+        '--fields=name',
+        '--fields=installedVersion',
+      ]);
       const result = JSON.parse(stdout);
       const expectedJsonResult = rawDataToJson(expectedDataBase);
       expectedJsonResult.splice(3, 2);
