@@ -1,6 +1,6 @@
+import createDebugMessages from 'debug';
 import got from 'got';
 import semver from 'semver';
-import createDebugMessages from 'debug';
 
 import { config } from '../../lib/config.js';
 import { joinUrlPath } from '../../lib/util.js';
@@ -17,7 +17,7 @@ const debug = createDebugMessages('license-report:expectedOutput');
  * @param {object} dependency - dependency defining a package (name, version etc.); will be modified.
  */
 async function addRemoteData(dependency) {
-  let uri = joinUrlPath(config.registry, dependency.name);
+  const uri = joinUrlPath(config.registry, dependency.name);
 
   debug('addRemoteVersion - REQUEST %s', uri);
 
@@ -27,7 +27,7 @@ async function addRemoteData(dependency) {
     hooks: {
       beforeRetry: [
         // eslint-disable-next-line no-unused-vars
-        (options, error, retryCount) => {
+        (_options, _error, _retryCount) => {
           debug(
             `http request to npm for package "${dependency.name}" failed, retrying again soon...`,
           );
@@ -64,10 +64,7 @@ async function addRemoteData(dependency) {
   // latestRemoteVersion
   if (dependency.latestRemoteVersion !== undefined) {
     dependency.latestRemoteVersion = 'n/a';
-    if (
-      packagesJson['dist-tags'] !== undefined &&
-      packagesJson['dist-tags'].latest !== undefined
-    ) {
+    if (packagesJson['dist-tags'] !== undefined && packagesJson['dist-tags'].latest !== undefined) {
       dependency.latestRemoteVersion = packagesJson['dist-tags'].latest;
     }
   }
@@ -75,10 +72,7 @@ async function addRemoteData(dependency) {
   // latestRemoteModified
   if (dependency.latestRemoteModified !== undefined) {
     dependency.latestRemoteModified = 'n/a';
-    if (
-      packagesJson.time !== undefined &&
-      packagesJson.time.modified !== undefined
-    ) {
+    if (packagesJson.time !== undefined && packagesJson.time.modified !== undefined) {
       dependency.latestRemoteModified = packagesJson.time.modified;
     }
   }
@@ -132,16 +126,11 @@ export function rawDataToCsv(expectedData, csvTemplate) {
     if (found !== null && Array.isArray(found) && found.length === 2) {
       // get package data from expectedData
       const packageName = found[1];
-      const expectedPackageData = expectedData.find(
-        (element) => element.name === packageName,
-      );
+      const expectedPackageData = expectedData.find((element) => element.name === packageName);
       if (expectedPackageData !== undefined) {
         line = line.replace(found[0], expectedPackageData.name);
         fieldNames.forEach((fieldName) => {
-          line = line.replace(
-            `{{${fieldName}}}`,
-            expectedPackageData[fieldName],
-          );
+          line = line.replace(`{{${fieldName}}}`, expectedPackageData[fieldName]);
         });
       }
     }
@@ -174,9 +163,8 @@ export function rawDataToTable(expectedData, tableTemplate) {
   };
   // get width of header columns
   for (const key in columnDefinitions) {
-    if (Object.hasOwnProperty.call(columnDefinitions, key)) {
-      columnDefinitions[key].maxColumnWidth =
-        columnDefinitions[key].title.length;
+    if (Object.hasOwn(columnDefinitions, key)) {
+      columnDefinitions[key].maxColumnWidth = columnDefinitions[key].title.length;
     }
   }
   // take account of the maximum width of data columns
@@ -192,7 +180,7 @@ export function rawDataToTable(expectedData, tableTemplate) {
   const templateLines = tableTemplate.split('\n');
 
   // adapt title lines
-  let headerLines = {
+  const headerLines = {
     titleLine: templateLines[0],
     dashesLine: templateLines[1],
   };
@@ -218,22 +206,15 @@ export function rawDataToTable(expectedData, tableTemplate) {
     if (found !== null && Array.isArray(found) && found.length === 2) {
       // get package data from expectedData
       const packageName = found[1];
-      const expectedPackageData = expectedData.find(
-        (element) => element.name === packageName,
-      );
+      const expectedPackageData = expectedData.find((element) => element.name === packageName);
       // replace placeholders with values
       if (expectedPackageData !== undefined) {
         line = line.replace(
           found[0],
-          expectedPackageData.name.padEnd(
-            columnDefinitions.name.maxColumnWidth,
-          ),
+          expectedPackageData.name.padEnd(columnDefinitions.name.maxColumnWidth),
         );
         for (const [key, value] of Object.entries(columnDefinitions)) {
-          line = line.replace(
-            `{{${key}}}`,
-            expectedPackageData[key].padEnd(value.maxColumnWidth),
-          );
+          line = line.replace(`{{${key}}}`, expectedPackageData[key].padEnd(value.maxColumnWidth));
         }
       }
     }
@@ -265,11 +246,9 @@ export function rawDataToHtml(expectedData, htmlTemplate) {
   ];
   const packageNamePattern = /\[\[(.+)]]/;
 
-  let startOfRow =
-    htmlTemplate.indexOf('</thead><tbody>') + '</thead><tbody>'.length;
+  let startOfRow = htmlTemplate.indexOf('</thead><tbody>') + '</thead><tbody>'.length;
   let updatedTemplate = htmlTemplate.slice(0, startOfRow);
-  let endOfRow =
-    htmlTemplate.indexOf('</td></tr>', startOfRow) + '</td></tr>'.length;
+  let endOfRow = htmlTemplate.indexOf('</td></tr>', startOfRow) + '</td></tr>'.length;
 
   do {
     let row = htmlTemplate.substring(startOfRow, endOfRow);
@@ -277,9 +256,7 @@ export function rawDataToHtml(expectedData, htmlTemplate) {
     if (found !== null && Array.isArray(found) && found.length === 2) {
       // get package data from expectedData
       const packageName = found[1];
-      const expectedPackageData = expectedData.find(
-        (element) => element.name === packageName,
-      );
+      const expectedPackageData = expectedData.find((element) => element.name === packageName);
       if (expectedPackageData !== undefined) {
         row = row.replace(found[0], expectedPackageData.name);
         fieldNames.forEach((fieldName) => {
@@ -289,8 +266,7 @@ export function rawDataToHtml(expectedData, htmlTemplate) {
     }
     updatedTemplate += row;
     startOfRow = endOfRow;
-    endOfRow =
-      htmlTemplate.indexOf('</td></tr>', startOfRow) + '</td></tr>'.length;
+    endOfRow = htmlTemplate.indexOf('</td></tr>', startOfRow) + '</td></tr>'.length;
   } while (endOfRow > startOfRow);
 
   updatedTemplate += htmlTemplate.slice(startOfRow);
@@ -324,16 +300,11 @@ export function rawDataToMarkdown(expectedData, markdownTemplate) {
     if (found !== null && Array.isArray(found) && found.length === 2) {
       // get package data from expectedData
       const packageName = found[1];
-      const expectedPackageData = expectedData.find(
-        (element) => element.name === packageName,
-      );
+      const expectedPackageData = expectedData.find((element) => element.name === packageName);
       if (expectedPackageData !== undefined) {
         line = line.replace(found[0], expectedPackageData.name);
         fieldNames.forEach((fieldName) => {
-          line = line.replace(
-            `{{${fieldName}}}`,
-            expectedPackageData[fieldName],
-          );
+          line = line.replace(`{{${fieldName}}}`, expectedPackageData[fieldName]);
         });
       }
     }

@@ -1,4 +1,4 @@
-# ANNOUNCEMENT: repository changing ownership
+# NOTICE: repository changed ownership
 
 On the 26th of May 2026 this repository changed its ownership and moved to the personal account of one of it's maintainers, [BePo65](https://github.com/BePo65).
 
@@ -344,10 +344,6 @@ export DEBUG=license-report*
 ## Changelog
 
 For list of changes and bugfixes, see [CHANGELOG.md](CHANGELOG.md).
-
-## Hints
-
-Eslint cannot be updated to v10 as eslint-plugin-json is not compatible (see azeemba/eslint-plugin-json#97).
 
 ## Contributing
 

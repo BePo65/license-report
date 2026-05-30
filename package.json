@@ -4,7 +4,8 @@
   "description": "creates a short report about project's dependencies (license, url etc)",
   "main": "index.js",
   "scripts": {
-    "lint": "npx eslint index.js lib/**/*.js test/**/*.js **/*.json",
+    "lint": "npx @biomejs/biome check .",
+    "lint:fix": "npx @biomejs/biome check --write .",
     "test": "node --test --test-reporter=spec",
     "release": "commit-and-tag-version -i CHANGELOG.md --same-file",
     "lint-commits": "commitlint --from 59f5e4b90d2d --to HEAD --verbose",
@@ -21,7 +22,7 @@
   "author": "BePo65",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kessler/license-report/issues"
+    "url": "https://github.com/bepo65/license-report/issues"
   },
   "homepage": "https://github.com/bepo65/license-report",
   "dependencies": {
@@ -38,21 +39,13 @@
     "visit-values": "^2.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.15",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "commit-and-tag-version": "^12.7.3",
-    "eslint": "^9.39.4",
-    "eslint-plugin-chai-expect": "^4.1.0",
-    "eslint-plugin-jsdoc": "^63.0.0",
-    "eslint-plugin-json": "^4.0.1",
-    "eslint-plugin-n": "^18.0.1",
-    "eslint-plugin-security": "^4.0.0",
-    "eslint-plugin-security-node": "^1.1.4",
-    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
-    "nock": "^15.0.0",
-    "prettier": "^3.8.3"
+    "nock": "^15.0.0"
   },
   "engines": {
     "node": ">=20"
@@ -68,7 +61,7 @@
     "screenshot.png"
   ],
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "npx @biomejs/biome check --write ."
   },
   "commit-and-tag-version": {
     "packageFiles": [

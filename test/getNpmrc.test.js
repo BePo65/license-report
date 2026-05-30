@@ -2,14 +2,12 @@ import assert from 'node:assert';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, it } from 'node:test';
 import url from 'node:url';
-import { getNpmConfig } from '../lib/getNpmrc.js';
 import { config } from '../lib/config.js';
+import { getNpmConfig } from '../lib/getNpmrc.js';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-const npmrcPath = path
-  .resolve(__dirname, 'fixture', 'npmrc', '.npmrc')
-  .replace(/(\s+)/g, '\\$1');
+const npmrcPath = path.resolve(__dirname, 'fixture', 'npmrc', '.npmrc').replace(/(\s+)/g, '\\$1');
 
 const npmrcPathWithoutDefToken = path
   .resolve(__dirname, 'fixture', 'npmrc', 'npmrc-without-default-token')
@@ -167,9 +165,7 @@ describe('getNpmrc', () => {
       config.useNpmrc = false;
       const npmrc = getNpmConfig();
 
-      assert.deepStrictEqual(npmrc.authTokens, [
-        { '//registry.npmjs.org/': 'env_default_token' },
-      ]);
+      assert.deepStrictEqual(npmrc.authTokens, [{ '//registry.npmjs.org/': 'env_default_token' }]);
     });
 
     it('should add auth token from env var if .npmrc has no token for default registry', () => {
@@ -231,8 +227,7 @@ describe('getNpmrc', () => {
         },
         authTokens: [
           {
-            '//some-other-default-registry.com/':
-              'env_token_for_custom_default',
+            '//some-other-default-registry.com/': 'env_token_for_custom_default',
           },
           { '//somewhere-else.com/another/': 'MYTOKEN2' },
           { '//somewhere-else.com/myorg/': 'MYTOKEN1' },

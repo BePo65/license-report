@@ -4,15 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import createDebugMessages from 'debug';
-
-import { config } from './lib/config.js';
-import { getFormatter } from './lib/getFormatter.js';
 import { addLocalPackageData } from './lib/addLocalPackageData.js';
 import { addPackageDataFromRepository } from './lib/addPackageDataFromRepository.js';
+import { config } from './lib/config.js';
 import { getDependencies } from './lib/getDependencies.js';
+import { getFormatter } from './lib/getFormatter.js';
 import { getNpmConfig } from './lib/getNpmrc.js';
 import { packageDataToReportData } from './lib/packageDataToReportData.js';
-import { isNullOrUndefined, helpText, readJson } from './lib/util.js';
+import { helpText, isNullOrUndefined, readJson } from './lib/util.js';
 
 const debug = createDebugMessages('license-report');
 
@@ -27,10 +26,10 @@ const debug = createDebugMessages('license-report');
   }
 
   // get path to .npmrc to use; 'config.npmrc' can be undefined
-  let npmrc = getNpmConfig(config.npmrc);
+  const npmrc = getNpmConfig(config.npmrc);
 
   if (path.extname(config.package) !== '.json') {
-    throw new Error('invalid package.json ' + config.package);
+    throw new Error(`invalid package.json ${config.package}`);
   }
 
   const outputFormatter = getFormatter(config.output);
@@ -49,12 +48,8 @@ const debug = createDebugMessages('license-report');
     }
 
     // Get a list of all the dependencies we want information about.
-    const inclusions = isNullOrUndefined(config.only)
-      ? null
-      : config.only.split(',');
-    const exclusions = Array.isArray(config.exclude)
-      ? config.exclude
-      : [config.exclude];
+    const inclusions = isNullOrUndefined(config.only) ? null : config.only.split(',');
+    const exclusions = Array.isArray(config.exclude) ? config.exclude : [config.exclude];
     let exclusionRegexp;
     if (
       config.excludeRegex !== undefined &&
@@ -70,24 +65,13 @@ const debug = createDebugMessages('license-report');
         exclusionRegexp = undefined;
       }
     }
-    const fieldsList = Array.isArray(config.fields)
-      ? config.fields
-      : [config.fields];
-    let depsIndex = getDependencies(
-      packageJson,
-      exclusions,
-      inclusions,
-      exclusionRegexp,
-    );
+    const fieldsList = Array.isArray(config.fields) ? config.fields : [config.fields];
+    const depsIndex = getDependencies(packageJson, exclusions, inclusions, exclusionRegexp);
 
     const projectRootPath = path.dirname(resolvedPackageJson);
     const packagesData = await Promise.all(
       depsIndex.map(async (element) => {
-        const localDataForPackage = await addLocalPackageData(
-          element,
-          projectRootPath,
-          fieldsList,
-        );
+        const localDataForPackage = await addLocalPackageData(element, projectRootPath, fieldsList);
         const completeDataForPackage = await addPackageDataFromRepository(
           localDataForPackage,
           npmrc,

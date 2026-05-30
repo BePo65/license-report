@@ -38,10 +38,7 @@ describe('addPackagesToIndex', () => {
   });
 
   it('adds a local package to the index', () => {
-    addPackagesToIndex(
-      { 'my-local-package': 'file:local-libs/my-local-package' },
-      index,
-    );
+    addPackagesToIndex({ 'my-local-package': 'file:local-libs/my-local-package' }, index);
 
     assert.deepStrictEqual(index, [
       {
@@ -149,13 +146,8 @@ describe('addPackagesToIndex', () => {
   });
 
   it('does not add excluded package to the index - excludeRegex', () => {
-    const excludeRegexp = new RegExp('@bar/f.*');
-    addPackagesToIndex(
-      { '@bar/foo': '1.2.3' },
-      index,
-      undefined,
-      excludeRegexp,
-    );
+    const excludeRegexp = /@bar\/f.*/;
+    addPackagesToIndex({ '@bar/foo': '1.2.3' }, index, undefined, excludeRegexp);
     addPackagesToIndex(
       {
         '@bar/foo': '*',
@@ -192,10 +184,7 @@ describe('addPackagesToIndex', () => {
   });
 
   it('add scoped package with alias to the index', () => {
-    addPackagesToIndex(
-      { '@kessler/tableify_1.0.1': 'npm:@kessler/tableify@^1.0.1' },
-      index,
-    );
+    addPackagesToIndex({ '@kessler/tableify_1.0.1': 'npm:@kessler/tableify@^1.0.1' }, index);
 
     assert.deepStrictEqual(index, [
       {

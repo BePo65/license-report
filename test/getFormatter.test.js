@@ -64,8 +64,7 @@ describe('getFormatter', () => {
       config.csvHeaders = true;
       const csvFormatter = getFormatter('csv');
       const csvResult = csvFormatter(testData, config);
-      const csvExpectedResult =
-        EXPECTED_CSV_HEADER + '\n' + EXPECTED_CSV_RESULT;
+      const csvExpectedResult = `${EXPECTED_CSV_HEADER}\n${EXPECTED_CSV_RESULT}`;
 
       assert.strictEqual(csvResult, csvExpectedResult);
     });
@@ -98,10 +97,7 @@ describe('getFormatter', () => {
       const htmlFormatter = getFormatter('html');
       const htmlResult = eol.auto(htmlFormatter(testData, config));
       const expectedResult = eol.auto(
-        fs.readFileSync(
-          path.join(__dirname, 'fixture', 'expectedOutput.formatter.html'),
-          'utf8',
-        ),
+        fs.readFileSync(path.join(__dirname, 'fixture', 'expectedOutput.formatter.html'), 'utf8'),
       );
 
       assert.strictEqual(htmlResult, expectedResult);
@@ -112,11 +108,7 @@ describe('getFormatter', () => {
       const htmlResult = eol.auto(htmlFormatter([], config));
       const expectedResult = eol.auto(
         fs.readFileSync(
-          path.join(
-            __dirname,
-            'fixture',
-            'expectedOutput.formatter.empty.html',
-          ),
+          path.join(__dirname, 'fixture', 'expectedOutput.formatter.empty.html'),
           'utf8',
         ),
       );

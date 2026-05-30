@@ -107,10 +107,7 @@ describe('getRegistryAccessData', () => {
     });
 
     it('should use envRegistry (normalized) for scoped package not in scopes and envRegistry token', () => {
-      const result = getRegistryAccessData(
-        '@unknownscope/pkg',
-        npmrcEnvOverride,
-      );
+      const result = getRegistryAccessData('@unknownscope/pkg', npmrcEnvOverride);
 
       assert.strictEqual(result.uri, 'https://env.custom.com/registry/');
       assert.strictEqual(result.authToken, 'ENV_TOKEN');
@@ -157,15 +154,9 @@ describe('getRegistryAccessData', () => {
         ],
       };
 
-      const result = getRegistryAccessData(
-        '@pro/superlib',
-        npmrcScopedSpecificTokens,
-      );
+      const result = getRegistryAccessData('@pro/superlib', npmrcScopedSpecificTokens);
 
-      assert.strictEqual(
-        result.uri,
-        'https://specific.registry.com/api/npm/private/',
-      );
+      assert.strictEqual(result.uri, 'https://specific.registry.com/api/npm/private/');
       assert.strictEqual(result.authToken, 'TOKEN_PRIVATE');
     });
   });
@@ -223,8 +214,7 @@ describe('getRegistryAccessData', () => {
         },
         {
           name: 'TypeError',
-          message:
-            "Cannot read properties of undefined (reading 'envRegistry')",
+          message: "Cannot read properties of undefined (reading 'envRegistry')",
         },
       );
     });
