@@ -39,7 +39,7 @@
     "visit-values": "^2.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.6",
+    "@biomejs/biome": "2.5.10",
     "@commitlint/cli": "^21.2.1",
     "@commitlint/config-conventional": "^21.2.0",
     "commit-and-tag-version": "^13.1.2",
