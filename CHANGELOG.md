@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.8.6](https://github.com/bepo65/license-report/compare/v6.8.5...v6.8.6) (2026-10-09)
+
+### Bug Fixes
+
+* security alert from github concerning "http-cache-semantics" ([c5b9613](https://github.com/bepo65/license-report/commit/c5b961368461772aee1878af8d14aca61b55c519))
+
 ## [6.8.5](https://github.com/bepo65/license-report/compare/v6.8.4...v6.8.5) (2026-05-28)
 
 ## [6.8.4](https://github.com/kessler/license-report/compare/v6.8.3...v6.8.4) (2026-04-02)
