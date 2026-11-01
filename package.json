@@ -45,7 +45,7 @@
     "commit-and-tag-version": "^13.2.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "nock": "^14.0.17"
+    "nock": "^15.0.5"
   },
   "engines": {
     "node": ">=20"
