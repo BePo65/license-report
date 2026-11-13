@@ -1,20 +1,20 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: '/'
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     cooldown:
       default-days: 7
     open-pull-requests-limit: 10
     ignore:
       # until issue azeemba/eslint-plugin-json#97 is fixed
-      - dependency-name: 'eslint'
-        versions: ['10.x']
+      - dependency-name: "eslint"
+        versions: ["10.x"]
 
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: "github-actions"
+    directory: "/"
     schedule:
-      interval: 'monthly'
+      interval: "monthly"
     cooldown:
       default-days: 7
