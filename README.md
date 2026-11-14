@@ -343,6 +343,16 @@ By setting the debug environment variable as follows, detailed log information i
 export DEBUG=license-report*
 ```
 
+To show debug information for a single library function use one the following values for the DEBUG environment variable:
+
+| function                     | DEBUG=                       |
+| ---------------------------- | ---------------------------- |
+| addLocalPackageData          | addLocalPackageData          |
+| getNpmrc                     | getNpmrc                     |
+| getPackageDataFromRepository | getPackageDataFromRepository |
+| getRegistryAccessData        | getRegistryAccessData        |
+| expectedOutput               | expectedOutput               |
+
 ## Changelog
 
 For list of changes and bugfixes, see [CHANGELOG.md](CHANGELOG.md).
