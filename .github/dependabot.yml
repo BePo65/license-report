@@ -7,10 +7,6 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 10
-    ignore:
-      # until issue azeemba/eslint-plugin-json#97 is fixed
-      - dependency-name: "eslint"
-        versions: ["10.x"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

@@ -1,8 +1,3 @@
-/* eslint no-prototype-builtins: off */
-/* Turn off rule, as object 'packageJson' has properties from Object.prototype.
-   Rule details see https://eslint.org/docs/latest/rules/no-prototype-builtins
- */
-
 import assert from 'node:assert';
 import { afterEach, before, beforeEach, describe, it } from 'node:test';
 import nock from 'nock';
