@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, it } from 'node:test';
+import { after, afterEach, before, beforeEach, describe, it } from 'node:test';
 import url from 'node:url';
 import { config } from '../lib/config.js';
 import { getNpmConfig } from '../lib/getNpmrc.js';
@@ -22,6 +22,40 @@ const npmrcPathWithoutContent = path
   .replace(/(\s+)/g, '\\$1');
 
 describe('getNpmrc', () => {
+  let oldEnvRegistryLower;
+  let oldEnvRegistryUpper;
+
+  before(() => {
+    // Save state of environment variables used in 'getNpmConfig'
+    oldEnvRegistryLower = process.env.npm_config_registry;
+    oldEnvRegistryUpper = process.env.NPM_CONFIG_REGISTRY;
+
+    // Delete environment variables used in 'getNpmConfig'
+    delete process.env.npm_config_registry;
+    delete process.env.NPM_CONFIG_REGISTRY;
+  });
+
+  beforeEach(() => {
+    // Delete environment variables used in 'getNpmConfig'
+    delete process.env.npm_config_registry;
+    delete process.env.NPM_CONFIG_REGISTRY;
+  });
+
+  after(() => {
+    // Restore state of environment variables used in 'getNpmConfig'
+    if (oldEnvRegistryLower === undefined) {
+      delete process.env.npm_config_registry;
+    } else {
+      process.env.npm_config_registry = oldEnvRegistryLower;
+    }
+
+    if (oldEnvRegistryUpper === undefined) {
+      delete process.env.NPM_CONFIG_REGISTRY;
+    } else {
+      process.env.npm_config_registry = oldEnvRegistryUpper;
+    }
+  });
+
   describe('using npmrc file', () => {
     let oldConfigUseNpmrc;
 
@@ -82,28 +116,6 @@ describe('getNpmrc', () => {
   });
 
   describe('using NPM_CONFIG_REGISTRY environment variable for registry', () => {
-    let oldEnvRegistryLower;
-    let oldEnvRegistryUpper;
-
-    beforeEach(() => {
-      oldEnvRegistryLower = process.env.npm_config_registry;
-      oldEnvRegistryUpper = process.env.NPM_CONFIG_REGISTRY;
-    });
-
-    afterEach(() => {
-      if (oldEnvRegistryLower === undefined) {
-        delete process.env.npm_config_registry;
-      } else {
-        process.env.npm_config_registry = oldEnvRegistryLower;
-      }
-
-      if (oldEnvRegistryUpper === undefined) {
-        delete process.env.NPM_CONFIG_REGISTRY;
-      } else {
-        process.env.npm_config_registry = oldEnvRegistryUpper;
-      }
-    });
-
     it('should use NPM_CONFIG_REGISTRY if set', () => {
       const expected = {
         defaultRegistry: 'https://registry.npmjs.org/',
