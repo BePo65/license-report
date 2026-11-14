@@ -17,7 +17,7 @@ const debug = createDebugMessages('license-report');
 
 (async () => {
   if (config.help) {
-    console.log(helpText); // eslint-disable-line security-node/detect-crlf
+    console.log(helpText);
     return;
   }
 
@@ -58,7 +58,6 @@ const debug = createDebugMessages('license-report');
     ) {
       try {
         // TODO how to sanitize regex pattern provided by user?
-        // eslint-disable-next-line security/detect-non-literal-regexp
         exclusionRegexp = new RegExp(config.excludeRegex, 'i');
       } catch (error) {
         console.error(error.message);
@@ -80,10 +79,9 @@ const debug = createDebugMessages('license-report');
       }),
     );
 
-    // eslint-disable-next-line security-node/detect-crlf
     console.log(outputFormatter(packagesData, config));
   } catch (e) {
     console.error(e.stack);
-    process.exit(1); // eslint-disable-line n/no-process-exit
+    process.exit(1);
   }
 })();

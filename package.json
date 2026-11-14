@@ -30,22 +30,22 @@
     "debug": "^4.4.3",
     "eol": "^0.10.0",
     "find-up-simple": "^1.0.1",
-    "got": "^16.0.0",
+    "got": "^16.2.0",
     "ini": "^7.0.0",
     "rc": "^1.2.8",
-    "semver": "^7.8.5",
+    "semver": "^7.8.6",
     "tablemark": "^4.1.0",
     "text-table": "^0.2.0",
     "visit-values": "^2.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.15",
-    "@commitlint/cli": "^21.2.3",
-    "@commitlint/config-conventional": "^21.2.3",
-    "commit-and-tag-version": "^13.2.1",
+    "@biomejs/biome": "2.6.5",
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "commit-and-tag-version": "^13.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
-    "nock": "^14.0.17"
+    "nock": "^15.0.6"
   },
   "engines": {
     "node": ">=20"

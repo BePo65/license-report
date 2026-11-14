@@ -58,12 +58,13 @@ license-report --only=prod,opt,peer
 
 The 'only' option is a comma separated list of the dependencies to use.  
 Possible values are:
+
 | value | segment of package.json |
 | ----- | ----------------------- |
-| prod | dependencies |
-| dev | devDependencies |
-| opt | optionalDependencies |
-| peer | peerDependencies |
+| prod  | dependencies            |
+| dev   | devDependencies         |
+| opt   | optionalDependencies    |
+| peer  | peerDependencies        |
 
 ### Explicit package.json:
 
@@ -281,19 +282,20 @@ For an explanation of all available options see https://github.com/haltcase/tabl
 ## "Build-in" fields
 
 Fields with data of the installed packages:
-| fieldname | column title | data source |
+
+| fieldname            | column title           | data source                                                                                                                          |
 | -------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| name | name | name of the package |
-| licenseType | license type | type of the license of the package (e.g. MIT) |
-| link | link | link to the repository of the package |
-| installedFrom | installed from | the download source for the installed package (optional field) |
-| remoteVersion | remote version | latest available version of the package in the registry following defined semver range (can be different from the installed version) |
-| installedVersion | installed version | installed version of the package (can be different from the remote version) |
-| definedVersion | defined version | version of the package as defined in the (dev-) dependencies entry (can start with a semver range character) |
-| latestRemoteVersion | latest remote version | latest version of the package available in the registry (optional field) |
-| latestRemoteModified | latest remote modified | last modification date of the package in the registry (optional field) |
-| comment | comment | deprecated (replaced by field 'remoteVersion'); will be removed in a future version |
-| author | author | author of the package |
+| name                 | name                   | name of the package                                                                                                                  |
+| licenseType          | license type           | type of the license of the package (e.g. MIT)                                                                                        |
+| link                 | link                   | link to the repository of the package                                                                                                |
+| installedFrom        | installed from         | the download source for the installed package (optional field)                                                                       |
+| remoteVersion        | remote version         | latest available version of the package in the registry following defined semver range (can be different from the installed version) |
+| installedVersion     | installed version      | installed version of the package (can be different from the remote version)                                                          |
+| definedVersion       | defined version        | version of the package as defined in the (dev-) dependencies entry (can start with a semver range character)                         |
+| latestRemoteVersion  | latest remote version  | latest version of the package available in the registry (optional field)                                                             |
+| latestRemoteModified | latest remote modified | last modification date of the package in the registry (optional field)                                                               |
+| comment              | comment                | deprecated (replaced by field 'remoteVersion'); will be removed in a future version                                                  |
+| author               | author                 | author of the package                                                                                                                |
 
 &nbsp;  
 Fields with data set in the configuration of license-report:
@@ -340,6 +342,16 @@ By setting the debug environment variable as follows, detailed log information i
 ```
 export DEBUG=license-report*
 ```
+
+To show debug information for a single library function use one the following values for the DEBUG environment variable:
+
+| function                     | DEBUG=                       |
+| ---------------------------- | ---------------------------- |
+| addLocalPackageData          | addLocalPackageData          |
+| getNpmrc                     | getNpmrc                     |
+| getPackageDataFromRepository | getPackageDataFromRepository |
+| getRegistryAccessData        | getRegistryAccessData        |
+| expectedOutput               | expectedOutput               |
 
 ## Changelog
 

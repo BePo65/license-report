@@ -26,7 +26,6 @@ async function addRemoteData(dependency) {
     timeout: config.httpTimeoutOptions,
     hooks: {
       beforeRetry: [
-        // eslint-disable-next-line no-unused-vars
         (_options, _error, _retryCount) => {
           debug(
             `http request to npm for package "${dependency.name}" failed, retrying again soon...`,

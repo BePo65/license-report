@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### Bug Fixes
 
-* security alert from github concerning "http-cache-semantics" ([c5b9613](https://github.com/bepo65/license-report/commit/c5b961368461772aee1878af8d14aca61b55c519))
+- security alert from github concerning "http-cache-semantics" ([c5b9613](https://github.com/bepo65/license-report/commit/c5b961368461772aee1878af8d14aca61b55c519))
 
 ## [6.8.5](https://github.com/bepo65/license-report/compare/v6.8.4...v6.8.5) (2026-05-28)
 
